@@ -18,13 +18,13 @@ include("wrapper.jl")
 
 Base.length(pathset::NFDPathSet) = pathset.count
 
-function indices(pathset::NFDPathSet)
+function getindices(pathset::NFDPathSet)
     count = length(pathset)
     unsafe_load.(pathset.indices, 1:count)
 end
 
 function getpaths(pathset::NFDPathSet)
-    unsafe_string.(pathset.buf .+ indices(pathset))
+    unsafe_string.(pathset.buf .+ getindices(pathset))
 end
 
 """
