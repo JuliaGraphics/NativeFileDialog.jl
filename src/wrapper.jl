@@ -25,3 +25,12 @@ end
 function GetError()
     @ccall libnfd.NFD_GetError()::Cstring
 end
+
+function PathSetFree(pathset::NFDPathSet)
+    refpathset = Ref(pathset)
+    @ccall libnfd.NFD_PathSet_Free(refpathset::Ref{NFDPathSet})::Cvoid
+end
+
+function Free(ptr)
+    @ccall libnfd.NFD_Free(ptr::Ptr{Cvoid})::Cvoid
+end
