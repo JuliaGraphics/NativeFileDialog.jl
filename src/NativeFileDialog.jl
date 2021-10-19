@@ -1,10 +1,11 @@
 module NativeFileDialog
 
+using FilePathsBase
 using NativeFileDialog_jll
 
 export pick_file, pick_multi_file, pick_folder, save_file
 
-@enum NFDResult NFD_ERROR=0 NFD_OKAY=1 NFD_CANCEL=2
+@enum NFDResult NFD_ERROR = 0 NFD_OKAY = 1 NFD_CANCEL = 2
 
 mutable struct NFDPathSet
     buf::Ptr{UInt8}
@@ -28,7 +29,7 @@ function getpaths(pathset::NFDPathSet)
 end
 
 """
-    pick_file(;path="", filterlist="")
+    pick_file(path=""; filterlist="")
 
 Open an OS native window to select a file.
 
@@ -47,10 +48,12 @@ julia> pick_file()
 "" # cancelled
 ```
 """
-function pick_file(;path="", filterlist="")
-    filters = isempty(filterlist) ? Cstring(C_NULL) : Cstring(pointer(filterlist))
-    path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
-    status, outpath = OpenDialog(filters, path)
+function pick_file(path = ""; filterlist = "")
+    GC.@preserve path filterlist begin
+        path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
+        filters = isempty(filterlist) ? Cstring(C_NULL) : Cstring(pointer(filterlist))
+        status, outpath = OpenDialog(filters, path)
+    end
     if status == NFD_ERROR
         error(unsafe_string(GetError()))
     elseif status == NFD_OKAY
@@ -64,8 +67,10 @@ function pick_file(;path="", filterlist="")
     return out
 end
 
+pick_file(path::AbstractPath; filterlist = "") = pick_file(string(path); filterlist)
+
 """
-    pick_multi_file(;path="", filterlist="")
+    pick_multi_file(path=""; filterlist="")
 
 Open an OS native window to select multiple files.
 
@@ -84,10 +89,12 @@ julia> pick_multi_file()
 String[] # cancelled
 ```
 """
-function pick_multi_file(;path="", filterlist="")
-    filters = isempty(filterlist) ? Cstring(C_NULL) : Cstring(pointer(filterlist))
-    path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
-    status, outpath = OpenDialogMultiple(filters, path)
+function pick_multi_file(path = ""; filterlist = "")
+    GC.@preserve path filterlist begin
+        path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
+        filters = isempty(filterlist) ? Cstring(C_NULL) : Cstring(pointer(filterlist))
+        status, outpath = OpenDialogMultiple(filters, path)
+    end
     if status == NFD_ERROR
         error(unsafe_string(GetError()))
     elseif status == NFD_OKAY
@@ -101,8 +108,11 @@ function pick_multi_file(;path="", filterlist="")
     return out
 end
 
+pick_multi_file(path::AbstractPath; filterlist = "") =
+    pick_multi_file(string(path); filterlist)
+
 """
-    save_file(;path="", filterlist="")
+    save_file(path=""; filterlist="")
 
 Open an OS native window to set the location and name to save a file.
 
@@ -121,10 +131,12 @@ julia> save_file()
 "" # cancelled
 ```
 """
-function save_file(;path="", filterlist="")
-    filters = isempty(filterlist) ? Cstring(C_NULL) : Cstring(pointer(filterlist))
-    path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
-    status, outpath = SaveDialog(filters, path)
+function save_file(path = ""; filterlist = "")
+    GC.@preserve path filterlist begin
+        path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
+        filters = isempty(filterlist) ? Cstring(C_NULL) : Cstring(pointer(filterlist))
+        status, outpath = SaveDialog(filters, path)
+    end
     if status == NFD_ERROR
         error(unsafe_string(GetError()))
     elseif status == NFD_OKAY
@@ -138,8 +150,10 @@ function save_file(;path="", filterlist="")
     return out
 end
 
+save_file(path::AbstractPath; filterlist = "") = save_file(string(path); filterlist)
+
 """
-    pick_folder(;path="")
+    pick_folder(path="")
 
 Open an OS native window to select a directory.
 
@@ -158,9 +172,11 @@ julia> pick_folder()
 "" # cancelled
 ```
 """
-function pick_folder(;path="")
-    path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
-    status, outpath = PickFolder(path)
+function pick_folder(path = "")
+    GC.@preserve path begin
+        path = isempty(path) ? Cstring(C_NULL) : Cstring(pointer(path))
+        status, outpath = PickFolder(path)
+    end
     if status == NFD_ERROR
         error(unsafe_string(GetError()))
     elseif status == NFD_OKAY
@@ -173,5 +189,7 @@ function pick_folder(;path="")
     end
     return out
 end
+
+pick_folder(path::AbstractPath) = pick_folder(string(path))
 
 end

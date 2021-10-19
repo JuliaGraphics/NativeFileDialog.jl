@@ -4,6 +4,7 @@ authors = ["José Joaquín Zubieta Rico <jose.zubieta@cimat.mx> and contributors
 version = "0.1.0"
 
 [deps]
+FilePathsBase = "48062228-2e41-5def-b9a4-89aafe57970f"
 NativeFileDialog_jll = "94d9ae2c-efc7-56f8-9a02-54c47b797961"
 
 [compat]
