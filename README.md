@@ -24,13 +24,13 @@ julia> Pkg.add("NativeFileDialog")
 NativeFileDialog.jl export four functions
 
 ```julia
-pick_file(;path="", filterlist="")
+pick_file(path=""; filterlist="")
 
-pick_multi_file(;path="", filterlist="")
+pick_multi_file(path=""; filterlist="")
 
-pick_folder(;path="")
+pick_folder(path="")
 
-save_file(;path="", filterlist="")
+save_file(path=""; filterlist="")
 ```
 
 The documentation of every one of these can be consulted in help mode in the REPL
@@ -39,16 +39,22 @@ are really descriptive.
 
 ### Path selection
 
-With the `path` parameter the directory in which the dialog will be open can be
-set, by default `path` is set to `""` and the default open point is operating
+The `path` positional argument sets the directory in which the dialog will be
+open, by default `path` is set to `""` and the default open point is operating
 system dependent.
+
+The `path` argument accepts `AbstractPath`s from
+[FilePathsBase.jl](https://github.com/rofinn/FilePathsBase.jl). It always
+returns `String`s given that there is not sensible way to tell the user if the
+selection was cancelled with the default behaviour of FilePathsBase.jl (an
+empty string is interpreted as the current directory).
 
 ### File filter lists
 
-The `filterlist` parameter allows you to define multiple extension filters for
-the dialogues. The syntax for doing this `"f1e1,f1e2;f2e1"` where `f1e1` and
-`f1e2` are extensions of the first filter list and `f2e1` is an extension for
-the second one.
+The `filterlist` keyword argument allows you to define multiple extension
+filters for the dialogues. The syntax for doing this is `"ext1,ext2;ext3"`
+where `ext1` and `ext2` are extensions of the first filter list and `ext3` is
+an extension for the second one.
 
 Notice that multiple extensions for one list are separated by a comma (`,`),
 while the different lists are separated by a semicolon (`;`).
@@ -61,8 +67,13 @@ accepted.
 ```julia
 julia> using NativeFileDialog
 
+julia> using FilePathsBase
+
 julia> pick_file()
 "/home/suave/primes.c"
+
+julia> pick_file(home()) # from FilePathsBase
+"/home/suave/donut.c"
 
 julia> pick_file()
 "" # cancelled selection
