@@ -1,7 +1,7 @@
 name = "NativeFileDialog"
 uuid = "e1fe445b-aa65-4df4-81c1-2041507f0fd4"
 authors = ["José Joaquín Zubieta Rico <jose.zubieta@cimat.mx> and contributors"]
-version = "0.2.0"
+version = "0.1.0"
 
 [deps]
 FilePathsBase = "48062228-2e41-5def-b9a4-89aafe57970f"
