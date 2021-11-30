@@ -67,7 +67,13 @@ function pick_file(path = ""; filterlist = "")
     return out
 end
 
-pick_file(path::AbstractPath; filterlist = "") = pick_file(string(path); filterlist)
+function pick_file(path::AbstractPath; filterlist = "")
+    outpath = pick_file(string(path); filterlist)
+    if isempty(outpath)
+        return nothing
+    end
+    Path(outpath)
+end
 
 """
     pick_multi_file(path=""; filterlist="")
@@ -108,8 +114,13 @@ function pick_multi_file(path = ""; filterlist = "")
     return out
 end
 
-pick_multi_file(path::AbstractPath; filterlist = "") =
-    pick_multi_file(string(path); filterlist)
+function pick_multi_file(path::AbstractPath; filterlist = "")
+    outpathset = pick_multi_file(string(path); filterlist)
+    if isempty(outpathset)
+        return nothing
+    end
+    Path.(outpathset)
+end
 
 """
     save_file(path=""; filterlist="")
@@ -150,7 +161,13 @@ function save_file(path = ""; filterlist = "")
     return out
 end
 
-save_file(path::AbstractPath; filterlist = "") = save_file(string(path); filterlist)
+function save_file(path::AbstractPath; filterlist = "")
+    outpath = save_file(string(path); filterlist)
+    if isempty(outpath)
+        return nothing
+    end
+    Path(outpath)
+end
 
 """
     pick_folder(path="")
@@ -190,6 +207,12 @@ function pick_folder(path = "")
     return out
 end
 
-pick_folder(path::AbstractPath) = pick_folder(string(path))
+function pick_folder(path::AbstractPath)
+    outpath = pick_folder(string(path))
+    if isempty(outpath)
+        return nothing
+    end
+    Path(outpath)
+end
 
 end

@@ -33,9 +33,9 @@ pick_folder(path="")
 save_file(path=""; filterlist="")
 ```
 
-The documentation of every one of these can be consulted in help mode in the REPL
-(press `?` to change to help mode, `backspace` to exit), although their names
-are really descriptive.
+The documentation of every one of these can be consulted in help mode in the
+REPL (press `?` to change to help mode, `backspace` to exit), although their
+names are really descriptive.
 
 ### Path selection
 
@@ -44,10 +44,9 @@ open, by default `path` is set to `""` and the default open point is operating
 system dependent.
 
 The `path` argument accepts `AbstractPath`s from
-[FilePathsBase.jl](https://github.com/rofinn/FilePathsBase.jl). It always
-returns `String`s given that there is not sensible way to tell the user if the
-selection was cancelled with the default behaviour of FilePathsBase.jl (an
-empty string is interpreted as the current directory).
+[FilePathsBase.jl](https://github.com/rofinn/FilePathsBase.jl). When
+a `<:AbstractPath` has been passed it returns `nothing` on cancellations for
+every one of the functions.
 
 ### File filter lists
 
@@ -73,7 +72,7 @@ julia> pick_file()
 "/home/suave/primes.c"
 
 julia> pick_file(home()) # from FilePathsBase
-"/home/suave/donut.c"
+p"/home/suave/donut.c"
 
 julia> pick_file()
 "" # cancelled selection
