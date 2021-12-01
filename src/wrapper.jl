@@ -1,36 +1,36 @@
 function OpenDialog(filterlist::Cstring, defaultpath::Cstring)
     outpath = Ref(Ptr{UInt8}())
-    status = ccall((:NFD_OpenDialog, libnfd), NFDResult, (Cstring, Cstring, Ref{Ptr{UInt8}}), filterlist, defaultpath, outpath)
+    status = @ccall libnfd.NFD_OpenDialog(filterlist::Cstring, defaultpath::Cstring, outpath::Ref{Ptr{UInt8}})::NFDResult
     return status, outpath[]
 end
 
 function OpenDialogMultiple(filterlist::Cstring, defaultpath::Cstring)
     outpathset = Ref(NFDPathSet(C_NULL, C_NULL, 0))
-    status = ccall((:NFD_OpenDialogMultiple, libnfd), NFDResult, (Cstring, Cstring, Ref{NFDPathSet}), filterlist, defaultpath, outpathset)
+    status = @ccall libnfd.NFD_OpenDialogMultiple(filterlist::Cstring, defaultpath::Cstring, outpathset::Ref{NFDPathSet})::NFDResult
     return status, outpathset[]
 end
 
 function SaveDialog(filterlist::Cstring, defaultpath::Cstring)
     outpath = Ref(Ptr{UInt8}())
-    status = ccall((:NFD_SaveDialog, libnfd), NFDResult, (Cstring, Cstring, Ref{Ptr{UInt8}}), filterlist, defaultpath, outpath)
+    status = @ccall libnfd.NFD_SaveDialog(filterlist::Cstring, defaultpath::Cstring, outpath::Ref{Ptr{UInt8}})::NFDResult
     return status, outpath[]
 end
 
 function PickFolder(defaultpath::Cstring)
     outpath = Ref(Ptr{UInt8}())
-    status = ccall((:NFD_PickFolder, libnfd), NFDResult, (Cstring, Ref{Ptr{UInt8}}), defaultpath, outpath)
+    status = @ccall libnfd.NFD_PickFolder(defaultpath::Cstring, outpath::Ref{Ptr{UInt8}})::NFDResult
     return status, outpath[]
 end
 
 function GetError()
-    ccall((:NFD_GetError, libnfd), Cstring, ())
+    @ccall libnfd.NFD_GetError()::Cstring
 end
 
 function PathSetFree(pathset::NFDPathSet)
     refpathset = Ref(pathset)
-    ccall((:NFD_PathSet_Free, libnfd), Cvoid, (Ref{NFDPathSet},), refpathset)
+    @ccall libnfd.NFD_PathSet_Free(refpathset::Ref{NFDPathSet})::Cvoid
 end
 
 function Free(ptr)
-    ccall((:NFD_Free, libnfd), Cvoid, (Ptr{Cvoid},), ptr)
+    @ccall libnfd.NFD_Free(ptr::Ptr{Cvoid})::Cvoid
 end
